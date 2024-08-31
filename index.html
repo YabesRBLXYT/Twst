@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video List</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+        #video-overlay a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        #video-overlay a:hover {
+            text-decoration: underline;
+        }
+        #video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-overlay"></div>
+    <div id="video-container">
+        <iframe id="video-frame" src="" allow="autoplay; fullscreen"></iframe>
+    </div>
+
+    <script>
+        // Fetch the links from the JSON file
+        fetch('links.json')
+            .then(response => response.json())
+            .then(data => {
+                const overlay = document.getElementById('video-overlay');
+                const urlParams = new URLSearchParams(window.location.hash.substr(1));
+                const hash = urlParams.get('hash');
+                const videoFrame = document.getElementById('video-frame');
+
+                // Populate overlay with links
+                data.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = `#${item.hash}`;
+                    link.textContent = item.name;
+                    link.addEventListener('click', () => {
+                        videoFrame.src = item.url;
+                    });
+                    overlay.appendChild(link);
+                });
+
+                // Set video source based on the hash
+                const currentHash = window.location.hash.substr(1);
+                const currentVideo = data.find(item => item.hash === currentHash);
+                if (currentVideo) {
+                    videoFrame.src = currentVideo.url;
+                }
+            });
+    </script>
+</body>
+  </html>
+  
