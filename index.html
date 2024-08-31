@@ -24,6 +24,7 @@
             padding: 10px;
             box-sizing: border-box;
             overflow-x: auto;
+            z-index: 1000; /* Ensure overlay is above other content */
         }
         #video-overlay a {
             color: white;
@@ -60,8 +61,6 @@
             .then(response => response.json())
             .then(data => {
                 const overlay = document.getElementById('video-overlay');
-                const urlParams = new URLSearchParams(window.location.hash.substr(1));
-                const hash = urlParams.get('hash');
                 const videoFrame = document.getElementById('video-frame');
 
                 // Populate overlay with links
@@ -71,6 +70,8 @@
                     link.textContent = item.name;
                     link.addEventListener('click', () => {
                         videoFrame.src = item.url;
+                        // Prevent default link action
+                        event.preventDefault();
                     });
                     overlay.appendChild(link);
                 });
@@ -84,5 +85,4 @@
             });
     </script>
 </body>
-  </html>
-  
+</html>
